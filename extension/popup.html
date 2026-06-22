@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Site Checker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Safe Site Checker</h1>
+    </header>
+
+    <main class="app-content">
+        <div class="status-area">
+            <p class="label">Current Site:</p>
+            <p id="current-url" class="value truncate" title="Checking...">Checking...</p>
+        </div>
+
+        <div id="result-container" class="result-container hidden">
+            <!-- The result block will get a modifier class like 'is-safe' or 'is-unsafe' -->
+            <div id="result-badge" class="badge">
+                <span id="result-status">Checking</span>
+            </div>
+            
+            <div id="score-area" class="score-area hidden">
+                <p>Risk Score: <span id="risk-score">0</span>/100</p>
+            </div>
+
+            <ul id="reasons-list" class="reasons-list">
+                <!-- Reasons will be injected here via JS -->
+            </ul>
+            
+
+        </div>
+        
+        <div id="error-container" class="error-container hidden">
+            <p id="error-message">An error occurred.</p>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <button id="recheck-btn" class="primary-button" disabled>Re-check</button>
+    </footer>
+
+    <!-- Module script so we can use modern JS patterns if needed -->
+    <script type="module" src="popup.js"></script>
+</body>
+</html>

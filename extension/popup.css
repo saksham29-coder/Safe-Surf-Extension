@@ -1,0 +1,257 @@
+/* Base Variables and Reset */
+:root {
+    --bg-color: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    
+    /* Semantic Colors */
+    --color-safe: #10b981;
+    --color-safe-bg: #d1fae5;
+    --color-unsafe: #ef4444;
+    --color-unsafe-bg: #fee2e2;
+    --color-neutral: #94a3b8;
+    --color-neutral-bg: #f1f5f9;
+
+    --btn-primary-bg: #3b82f6;
+    --btn-primary-hover: #2563eb;
+    --btn-disabled: #cbd5e1;
+
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 320px;
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* Layout */
+.app-header {
+    background-color: #ffffff;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.app-header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.app-content {
+    padding: 16px;
+}
+
+.app-footer {
+    padding: 16px;
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Components */
+.status-area {
+    margin-bottom: 20px;
+}
+
+.label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.value {
+    font-size: 13px;
+    font-family: monospace;
+    color: var(--text-primary);
+    background-color: #ffffff;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Result Badge */
+.result-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.badge.neutral {
+    background-color: var(--color-neutral-bg);
+    color: var(--color-neutral);
+}
+
+.badge.safe {
+    background-color: var(--color-safe-bg);
+    color: var(--color-safe);
+}
+
+.badge.unsafe {
+    background-color: var(--color-unsafe-bg);
+    color: var(--color-unsafe);
+}
+
+/* Score Area */
+.score-area {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Reasons List */
+.reasons-list {
+    width: 100%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reasons-list li {
+    font-size: 12px;
+    color: var(--color-unsafe);
+    background-color: #ffffff;
+    border: 1px solid var(--color-unsafe-bg);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.reasons-list li::before {
+    content: "•";
+    margin-right: 6px;
+    font-weight: bold;
+}
+
+/* Error Container */
+.error-container {
+    background-color: var(--color-unsafe-bg);
+    border: 1px solid var(--color-unsafe);
+    color: var(--color-unsafe);
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Button */
+.primary-button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--btn-primary-bg);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.primary-button:hover:not(:disabled) {
+    background-color: var(--btn-primary-hover);
+}
+
+.primary-button:disabled {
+    background-color: var(--btn-disabled);
+    cursor: not-allowed;
+}
+
+/* Report Section */
+.report-container {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+    text-align: center;
+}
+
+.report-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.report-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.report-button {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    background-color: #ffffff;
+}
+
+.report-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.safe-btn {
+    border-color: var(--color-safe);
+    color: var(--color-safe);
+}
+.safe-btn:hover:not(:disabled) {
+    background-color: var(--color-safe-bg);
+}
+
+.unsafe-btn {
+    border-color: var(--color-unsafe);
+    color: var(--color-unsafe);
+}
+.unsafe-btn:hover:not(:disabled) {
+    background-color: var(--color-unsafe-bg);
+}
+
+.report-message {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--color-safe);
+}
