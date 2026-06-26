@@ -28,7 +28,7 @@ This is the Python Flask backend for the Safe Site Checker browser extension. It
    ```bash
    python app.py
    ```
-   The server will start on `http://127.0.0.1:5000`.
+   The server will start on `http://127.0.0.1:5001`.
 
 ## API Endpoints
 
@@ -46,7 +46,7 @@ Analyzes the provided URL for safety.
 
 **Example Request:**
 ```bash
-curl "http://127.0.0.1:5000/check?url=http://free-money-now.xyz/claim"
+curl "http://127.0.0.1:5001/check?url=http://free-money-now.xyz/claim"
 ```
 
 **Example Response:**
