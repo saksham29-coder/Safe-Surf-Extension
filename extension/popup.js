@@ -1,5 +1,6 @@
 // Constants
 const BACKEND_URL = "http://127.0.0.1:5001/check";
+const REPORT_URL = "http://127.0.0.1:5001/report";
 
 // DOM Elements
 const currentUrlEl = document.getElementById("current-url");
@@ -104,8 +105,67 @@ function showResults(result) {
             reasonsList.appendChild(li);
         });
     }
+
+    // Inject report section if not already present
+    let reportContainer = document.getElementById("report-container");
+    if (!reportContainer) {
+        reportContainer = document.createElement("div");
+        reportContainer.id = "report-container";
+        reportContainer.className = "report-container";
+        reportContainer.innerHTML = `
+            <p class="report-label">Was this result correct?</p>
+            <div class="report-buttons">
+                <button id="report-safe-btn" class="report-button safe-btn">✓ It's Safe</button>
+                <button id="report-unsafe-btn" class="report-button unsafe-btn">✕ It's Unsafe</button>
+            </div>
+            <p id="report-message" class="report-message hidden"></p>
+        `;
+        resultContainer.appendChild(reportContainer);
+
+        document.getElementById("report-safe-btn").addEventListener("click", () => submitReport(true));
+        document.getElementById("report-unsafe-btn").addEventListener("click", () => submitReport(false));
+    } else {
+        // Reset buttons if re-checking
+        document.getElementById("report-safe-btn").disabled = false;
+        document.getElementById("report-unsafe-btn").disabled = false;
+        document.getElementById("report-message").classList.add("hidden");
+        document.getElementById("report-message").textContent = "";
+    }
     
     recheckBtn.disabled = false;
+}
+
+/**
+ * Submits a user report to the backend.
+ * @param {boolean} reportedIsSafe Whether the user thinks the site is safe
+ */
+async function submitReport(reportedIsSafe) {
+    const safeBtnEl = document.getElementById("report-safe-btn");
+    const unsafeBtnEl = document.getElementById("report-unsafe-btn");
+    const reportMsgEl = document.getElementById("report-message");
+
+    safeBtnEl.disabled = true;
+    unsafeBtnEl.disabled = true;
+
+    try {
+        const response = await fetch(REPORT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: currentCheckedUrl, reported_is_safe: reportedIsSafe })
+        });
+
+        if (!response.ok) throw new Error("Server error");
+
+        reportMsgEl.textContent = "✓ Thanks for your report!";
+        reportMsgEl.classList.remove("hidden");
+    } catch (err) {
+        reportMsgEl.textContent = "Could not submit report.";
+        reportMsgEl.style.color = "var(--color-unsafe)";
+        reportMsgEl.classList.remove("hidden");
+        // Re-enable buttons on failure
+        safeBtnEl.disabled = false;
+        unsafeBtnEl.disabled = false;
+    }
 }
 
 /**
@@ -160,6 +220,3 @@ document.addEventListener("DOMContentLoaded", () => {
 recheckBtn.addEventListener("click", () => {
     runCheck();
 });
-
-
-

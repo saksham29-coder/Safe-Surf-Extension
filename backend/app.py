@@ -9,8 +9,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///safesite.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///safesite.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
@@ -18,10 +18,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+
 @app.route("/", methods=["GET"])
 def index():
     """Health check endpoint to verify backend is running."""
     return jsonify({"status": "Backend Running"}), 200
+
 
 @app.route("/check", methods=["GET"])
 def check():
@@ -31,7 +33,7 @@ def check():
     Checks cache first.
     """
     url_to_check = request.args.get("url")
-    
+
     if not url_to_check:
         return jsonify({"error": "Missing 'url' query parameter"}), 400
 
@@ -45,30 +47,61 @@ def check():
 
         # 2. Call the core analysis logic
         result = analyze_url(url_to_check)
-        
+
         # 3. Update or create the cache entry
         if cached_url:
-            cached_url.is_safe = result['is_safe']
-            cached_url.risk_score = result['risk_score']
-            cached_url.reasons = result['reasons']
+            cached_url.is_safe = result["is_safe"]
+            cached_url.risk_score = result["risk_score"]
+            cached_url.reasons = result["reasons"]
             cached_url.last_checked = datetime.utcnow()
         else:
             new_check = CheckedURL(
-                url=result['url'],
-                is_safe=result['is_safe'],
-                risk_score=result['risk_score'],
-                reasons=result['reasons']
+                url=result["url"],
+                is_safe=result["is_safe"],
+                risk_score=result["risk_score"],
+                reasons=result["reasons"],
             )
             db.session.add(new_check)
-        
+
         db.session.commit()
-        
+
         return jsonify(result), 200
-        
+
     except Exception as e:
         # Catch unexpected errors to prevent raw stack traces from reaching the client
         return jsonify({"error": f"An error occurred during analysis: {str(e)}"}), 500
 
+
+@app.route("/report", methods=["POST"])
+def report():
+    """
+    Endpoint to submit a user report for a URL.
+    Expects JSON body: { "url": "...", "reported_is_safe": true/false }
+    """
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    url = data.get("url")
+    reported_is_safe = data.get("reported_is_safe")
+
+    if not url:
+        return jsonify({"error": "Missing 'url' field"}), 400
+    if reported_is_safe is None:
+        return jsonify({"error": "Missing 'reported_is_safe' field"}), 400
+    if not isinstance(reported_is_safe, bool):
+        return jsonify({"error": "'reported_is_safe' must be a boolean"}), 400
+
+    try:
+        new_report = UserReport(url=url, reported_is_safe=reported_is_safe)
+        db.session.add(new_report)
+        db.session.commit()
+        return jsonify(
+            {"message": "Report submitted successfully", "report": new_report.to_dict()}
+        ), 201
+    except Exception as e:
+        return jsonify({"error": f"Failed to save report: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
